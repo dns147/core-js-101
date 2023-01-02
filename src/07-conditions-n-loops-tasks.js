@@ -353,8 +353,15 @@ function isCreditCardNumber(ccn) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const arr = String(num).split('');
+  const sum = arr.reduce((s, v) => s + +v, 0);
+
+  if (sum > 9) {
+    return getDigitalRoot(sum);
+  }
+
+  return sum;
 }
 
 
@@ -379,8 +386,23 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  let copyStr = str;
+  const brackets = ['[]', '()', '{}', '<>'];
+  let res = false;
+
+  for (let i = 0; i < brackets.length; i += 1) {
+    if (copyStr.replace(brackets[i], '').length !== copyStr.length) {
+      copyStr = copyStr.replace(brackets[i], '');
+      i = -1;
+    }
+  }
+
+  if (copyStr.length === 0) {
+    res = true;
+  }
+
+  return res;
 }
 
 
@@ -404,8 +426,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -421,8 +443,33 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let resArr = null;
+
+  const getArrStrPath = (arr1, arr2) => {
+    const arrStr = [];
+
+    arr1.forEach((valuePath1, idx) => {
+      if (valuePath1 === arr2[idx]) {
+        arrStr.push(valuePath1);
+      }
+    });
+
+    return arrStr;
+  };
+
+  for (let i = 0; i < pathes.length; i += 1) {
+    const arrPath1 = pathes[i].split('/');
+
+    if (pathes[i + 1]) {
+      const arrPath2 = pathes[i + 1].split('/');
+      resArr = getArrStrPath(arrPath1, arrPath2);
+    }
+  }
+
+  const sumPath = (resArr.length === 0) ? resArr.join('/') : `${resArr.join('/')}/`;
+
+  return sumPath;
 }
 
 
@@ -444,8 +491,26 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const res = [];
+
+  for (let i = 0; i < m1.length; i += 1) {
+    const z = [];
+
+    for (let m = 0; m < m1.length; m += 1) {
+      let c = 0;
+
+      for (let n = 0; n < m1[m].length; n += 1) {
+        c += m1[i][n] * m2[n][m];
+      }
+
+      z.push(c);
+    }
+
+    res.push(z);
+  }
+
+  return res;
 }
 
 
@@ -479,8 +544,77 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let winner;
+  let XVert1 = 0;
+  let OVert1 = 0;
+  let XVert2 = 0;
+  let OVert2 = 0;
+  let XVert3 = 0;
+  let OVert3 = 0;
+  let XDiag1 = 0;
+  let ODiag1 = 0;
+  let XDiag2 = 0;
+  let ODiag2 = 0;
+
+  for (let i = 0; i < position.length; i += 1) {
+    let winXHoriz = 0;
+    let winOHoriz = 0;
+
+    for (let k = 0; k < position.length; k += 1) {
+      if (position[i][k] === 'X') {
+        winXHoriz += 1;
+      } else if (position[i][k] === '0') {
+        winOHoriz += 1;
+      }
+    }
+
+    if (position[i][0] === 'X') {
+      XVert1 += 1;
+    } else if (position[i][0] === '0') {
+      OVert1 += 1;
+    }
+
+    if (position[i][1] === 'X') {
+      XVert2 += 1;
+    } else if (position[i][1] === '0') {
+      OVert2 += 1;
+    }
+
+    if (position[i][2] === 'X') {
+      XVert3 += 1;
+    } else if (position[i][2] === '0') {
+      OVert3 += 1;
+    }
+
+    if (position[i][i] === 'X') {
+      XDiag1 += 1;
+    } else if (position[i][i] === '0') {
+      ODiag1 += 1;
+    }
+
+    if (position[i][2 - i] === 'X') {
+      XDiag2 += 1;
+    } else if (position[i][2 - i] === '0') {
+      ODiag2 += 1;
+    }
+
+    if (winXHoriz === 3) {
+      winner = 'X';
+      break;
+    } else if (winOHoriz === 3) {
+      winner = '0';
+      break;
+    }
+  }
+
+  if (XVert1 === 3 || XVert2 === 3 || XVert3 === 3 || XDiag1 === 3 || XDiag2 === 3) {
+    winner = 'X';
+  } else if (OVert1 === 3 || OVert2 === 3 || OVert3 === 3 || ODiag1 === 3 || ODiag2 === 3) {
+    winner = '0';
+  }
+
+  return winner;
 }
 
 
